@@ -48,6 +48,24 @@ class Argon2i implements Argon2 {
         return new String(encoded, ASCII);
     }
 
+    @Override
+    public String hashRaw(int iterations, int memory, int parallelism, String password) {
+        byte[] pwd = password.getBytes();
+        byte[] salt = generateSalt();
+
+        byte[] hash = new byte[HASH_LENGTH * 4];
+
+        int result = Argon2Library.INSTANCE.argon2i_hash_raw(
+                new Uint32_t(iterations), new Uint32_t(memory), new Uint32_t(parallelism), pwd, new Size_t(pwd.length),
+                salt, new Size_t(salt.length), hash, new Size_t(hash.length)
+        );
+        if (result != Argon2Library.ARGON2_OK) {
+            throw new IllegalStateException("Expected return code " + Argon2Library.ARGON2_OK + ", got " + result + ". See https://github.com/P-H-C/phc-winner-argon2/blob/master/src/argon2.h for return codes.");
+        }
+
+        return new String(hash, ASCII);
+    }
+
     /**
      * Generates {@link #SALT_LENGTH} bytes of salt.
      *

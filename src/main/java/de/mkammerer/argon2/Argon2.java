@@ -16,6 +16,17 @@ public interface Argon2 {
     String hash(int iterations, int memory, int parallelism, String password);
 
     /**
+     * Encodes a password.
+     *
+     * @param iterations  Number of iterations
+     * @param memory      Sets memory usage to x kibibytes
+     * @param parallelism Number of threads and compute lanes
+     * @param password    Password to hash
+     * @return Hashed password.
+     */
+    String hashRaw(int iterations, int memory, int parallelism, String password);
+
+    /**
      * Verifies a password against a hash.
      *
      * @param hash Hash.
